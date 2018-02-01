@@ -1,0 +1,42 @@
+<html>
+<head>
+<script>
+var websocket;
+var apiKey = document.getElementById('api-key');
+var submit = document.getElementById('submit');
+var messages = document.getElementById('messages');
+submit.onclick = function() {
+    if (websocket != null) {
+        websocket.close();
+    }
+    
+    websocket = new WebSocket('wss://stream.pushbullet.com/websocket/' + apiKey.value);
+    websocket.onopen = function(event) {
+        messages.innerHTML += "<p>WebSocket Done</p>";
+    }
+    websocket.onmessage = function(event) {
+    var msg = JSON.parse(event.data)    
+        messages.innerHTML += "<p>" + msg.push.body + "</p>";
+    }
+    websocket.onerror = function(event) {
+        messages.innerHTML += "<p>WebSocket onerror</p>";
+    }
+    websocket.onclose = function(event) {
+        messages.innerHTML += "<p>WebSocket onclose</p>";
+    }
+}
+
+</script>
+</head>
+<body>
+<div>
+    API Key: <input id="api-key" type="text" style="width:300px">
+    <input id="submit" type="button" value="Submit">
+</div>
+<font size="+20">
+<div id="messages"></div></font>
+
+
+</body>
+</html>
+
